@@ -64,9 +64,9 @@ function handleRequests(req, res) {
 function writeTweet(tweet, res) {
     if (tweet.text && tweet.userName) {
         console.log(tweet);
-        fs.appendFile(__dirname + '/messages.txt', JSON.stringify(tweet), function (err) {
+        fs.appendFile(__dirname + '/messages.txt', JSON.stringify(tweet) + '\n', function (err) {
             console.log(err);
-            res.writeHead(200);
+            res.writeHead(201);
             res.end();
         });
     } else {
@@ -80,12 +80,22 @@ function readFile(filePath, header, res) {
 
     var file = path.join(__dirname, filePath);
     fs.readFile(file, function (err, data) {
-        var statusCode = statusCode || 200;
-        res.writeHead(statusCode, header);
-        res.end(data);
+        if (err){
+            var statusCode = statusCode || 404;
+            res.writeHead(statusCode, header);
+            res.end(data)
+        } else {
+            var statusCode2 = statusCode || 200;
+            res.writeHead(statusCode2, header);
+            res.end(data);
+        }
     });
 }
+
 
 module.exports = {
     handleRequests: handleRequests
 };
+
+
+
